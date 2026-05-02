@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOAT Ranker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <h1>GOAT Ranker <span class="bow"></span></h1>
+      <p class="subtitle">Rate &amp; rank the greatest footballers of all time</p>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ── Create player ─────────────────────────────── -->
+    <section class="section card" id="create-section">
+      <h2 class="section-title">Add a Player</h2>
+      <form id="player-form" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Name <span class="required">*</span></label>
+            <input id="name" type="text" placeholder="e.g. Vinicius Jr." required>
+          </div>
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input id="country" type="text" placeholder="e.g. Brazil">
+          </div>
+          <div class="form-group">
+            <label for="club">Club</label>
+            <input id="club" type="text" placeholder="e.g. Real Madrid">
+          </div>
+          <div class="form-group">
+            <label for="image">Photo</label>
+            <input id="image" type="file" accept="image/*" class="file-input">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <span id="form-btn-text">Add Player</span>
+          </button>
+          <p id="form-error" class="error-msg hidden"></p>
+        </div>
+      </form>
+    </section>
+
+    <!-- ── Players list ───────────────────────────────── -->
+    <section class="section" id="players-section">
+      <div class="section-header">
+        <h2 class="section-title">Players</h2>
+        <input type="text" id="search" placeholder=" Search player..." class="search-input">
+      </div>
+
+      <div id="loading-players" class="loading hidden">
+        <span class="spinner"></span> Loading players…
+      </div>
+
+      <div id="players" class="players-grid"></div>
+
+      <div class="pagination" id="pagination">
+        <button id="prev-page" class="btn btn-secondary" disabled>← Prev</button>
+        <span id="page-info" class="page-info">Page 1</span>
+        <button id="next-page" class="btn btn-secondary">Next →</button>
+      </div>
+    </section>
+
+    <!-- ── Tier list ──────────────────────────────────── -->
+    <section class="section" id="ranking-section">
+      <h2 class="section-title">Tier List</h2>
+
+      <div id="loading-ranking" class="loading hidden">
+        <span class="spinner"></span> Loading tier list…
+      </div>
+
+      <div id="ranking" class="tierlist"></div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
