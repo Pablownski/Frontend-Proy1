@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:8001';
+export const BASE_URL = `${window.location.origin}/juanpa/proy1/api`;
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, options);
