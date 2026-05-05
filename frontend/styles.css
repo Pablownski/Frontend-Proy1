@@ -600,8 +600,6 @@ input, select { font-family: inherit; }
 @media print {
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
-  body { background: #fff !important; color: #111 !important; }
-
   .site-header,
   #create-section,
   #players-section,
@@ -614,23 +612,7 @@ input, select { font-family: inherit; }
 
   .section-header { margin-bottom: 1rem; }
 
-  .section-title { color: #111 !important; font-size: 1.4rem; }
-
-  .tierlist {
-    border: 1px solid #ccc !important;
-    box-shadow: none !important;
-    background: #fff !important;
-  }
-
-  .tier { border-bottom: 1px solid #ccc !important; min-height: 80px; }
-
-  .tier-players { background: #fff !important; }
-
-  .tier-player-name { color: #111 !important; }
-
-  .tier-player-rating { color: #b8860b !important; }
-
-  .empty-msg { color: #666 !important; }
+  .tierlist { box-shadow: none !important; }
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
