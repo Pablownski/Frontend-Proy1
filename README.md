@@ -1,90 +1,124 @@
-⚽ GOAT Ranker — Frontend
+# ⚽ GOAT Ranker — Frontend
 
-Cliente web para la aplicación GOAT Ranker, que permite crear, calificar y rankear futbolistas.
+Cliente web para rankear a los mejores futbolistas de todos los tiempos. Permite crear jugadores, calificarlos y armar una tier list visual.
 
-Este frontend consume una API REST utilizando JavaScript vanilla (fetch) y no utiliza frameworks ni librerías externas.
+No utiliza frameworks ni librerías externas — solo HTML, CSS y JavaScript vanilla con ES Modules.
 
-🧠 Arquitectura
+## 🌍 Demo en vivo
+
+**https://cuchito.live/juanpa/proy1/**
+
+---
+
+## 🔌 Funcionalidades
+
+### Jugadores
+- **Agregar jugador**: nombre (obligatorio), país, club y foto (archivo de imagen)
+- **Listar jugadores**: grilla paginada de 10 por página con foto, rating y tier asignado
+- **Buscar**: búsqueda en tiempo real por nombre (debounce de 400ms)
+- **Calificar**: puntaje del 1 al 10 (acepta decimales); el promedio se muestra en la card
+- **Eliminar**: borra el jugador y lo quita de la tier list automáticamente
+
+### Tier List
+- **Asignar tier**: seleccioná el tier (S / A / B / C / D / F) desde la card del jugador
+- **Visualizar ranking**: sección con los tiers S→F y los jugadores rankeados en cada uno
+- **Exportar PDF**: abre el diálogo de impresión del browser mostrando solo la tier list con el tema oscuro
+- **Reset Tier List**: elimina todos los jugadores de la tier list (con confirmación)
+
+---
+
+## 🧠 Arquitectura
+
+```
 [ Browser ]
      ↓ fetch()
-[ Frontend (HTML + JS) ]
-     ↓ HTTP JSON
-[ Backend API ]
-El frontend NO accede directamente a la base de datos
-Toda la lógica de datos vive en el backend
-El frontend solo maneja UI y estado
-🚀 Tecnologías
-HTML5
-CSS3
-JavaScript (ES Modules)
-Fetch API
-Nginx (para servir en Docker)
-📁 Estructura del proyecto
+[ Frontend — HTML + CSS + JS (ES Modules) ]
+     ↓ HTTP / JSON
+[ Backend API — /juanpa/proy1/api ]
+     ↓
+[ PostgreSQL ]
+```
+
+El frontend no accede directamente a la base de datos. Toda la lógica de datos vive en el backend.
+
+El estado local se guarda en `localStorage` bajo la clave `goat_ranking_entries` para mantener los tier assignments entre sesiones.
+
+---
+
+## 📁 Estructura
+
+```
 frontend/
-├── index.html
-├── styles.css
-├── js/
-│   ├── app.js       # lógica principal
-│   ├── api.js       # llamadas al backend
-│   ├── state.js     # estado global
-│   └── ui.js        # renderizado
-├── Dockerfile
-└── README.md
-🌐 Conexión con el backend
+├── index.html        # estructura HTML de la app
+├── styles.css        # estilos + media query de impresión
+├── Dockerfile        # imagen nginx para servir los estáticos
+└── js/
+    ├── app.js        # inicialización, handlers y event listeners
+    ├── api.js        # todas las llamadas al backend (fetch)
+    ├── state.js      # estado global + localStorage
+    └── ui.js         # funciones de renderizado del DOM
+```
 
-El frontend consume la API desde:
+---
 
-export const BASE_URL = 'http://localhost:8001';
+## 🌐 Conexión con el backend
 
+La URL base se calcula dinámicamente:
 
+```js
+export const BASE_URL = `${window.location.origin}/juanpa/proy1/api`;
+```
 
+Endpoints que consume:
 
-Asegúrate de que el backend esté corriendo en ese puerto.
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/players` | Lista paginada (params: `page`, `limit`, `q`) |
+| POST | `/players` | Crear jugador (multipart/form-data) |
+| DELETE | `/players/:id` | Eliminar jugador |
+| POST | `/players/:id/ratings` | Enviar calificación |
+| GET | `/ranking` | Obtener tier list agrupada por tier |
+| POST | `/ranking` | Asignar jugador a un tier |
+| PUT | `/ranking/:id` | Cambiar tier de un jugador |
+| DELETE | `/ranking/:id` | Quitar jugador de la tier list |
 
-🔌 Funcionalidades
-Crear jugadores con imagen
-Listar jugadores con paginación
-Buscar jugadores por nombre
-Eliminar jugadores
-Calificar jugadores (1–10)
-Asignar jugadores a tiers (S, A, B, C, D, F)
-Visualizar ranking tipo tier list
-🐳 Ejecución con Docker
+---
 
-Desde la raíz del proyecto:
+## 🐳 Ejecución con Docker
 
+El proyecto completo (frontend + backend + base de datos) se levanta desde la raíz del repo padre:
+
+```bash
 docker compose up --build
-🌍 Acceso
-Frontend: http://localhost:5173
-Backend: http://localhost:8001
-⚠️ CORS
+```
 
-El navegador bloquea peticiones entre distintos orígenes (puertos distintos).
-El backend debe permitir estas peticiones mediante CORS.
+Servicios:
 
-🧪 Ejecución sin Docker
+| Servicio | Puerto | Descripción |
+|----------|--------|-------------|
+| `proy1-frontend` | `5173` | Nginx sirviendo los archivos estáticos |
+| `proy1-api` | `8001` | API REST (FastAPI) |
+| `proy1-db` | `5433` | PostgreSQL 15 |
 
-Puedes abrir directamente:
+Las imágenes subidas por los usuarios se guardan en el volumen `proy1_uploads` (montado en `/app/uploads` del contenedor API).
 
-index.html
+Acceso local tras levantar:
+- Frontend: http://localhost:5173
+- API: http://localhost:8001
 
-Pero algunas funciones pueden fallar si el backend no permite CORS.
+---
 
+## 🔗 Backend
 
-🎯 Características técnicas
-Uso de fetch() nativo para consumir API
-Manejo de estado en memoria + localStorage
-Render dinámico del DOM
-Arquitectura modular (separación de responsabilidades)
-🔗 Backend
+👉 https://github.com/Pablownski/Back-Proy1
 
-👉 (https://github.com/Pablownski/Back-Proy1)
+---
 
-🧠 Notas
+## 🎯 Características técnicas
 
-Este proyecto demuestra:
-
-consumo de APIs REST sin frameworks
-separación frontend/backend
-manejo de estado en cliente
-interacción con servidor mediante HTTP
+- Fetch API nativa para consumir el backend
+- ES Modules (`import`/`export`) sin bundler
+- Estado en memoria + `localStorage` para persistir tier assignments entre sesiones
+- Renderizado dinámico del DOM (sin frameworks)
+- Delegación de eventos para la grilla de jugadores
+- Arquitectura en capas: `api.js` → `state.js` → `ui.js` → `app.js`
