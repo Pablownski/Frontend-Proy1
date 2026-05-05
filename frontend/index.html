@@ -17,7 +17,7 @@
 
   <main class="main">
 
-    <!-- ── Create player ─────────────────────────────── -->
+    <!-- Create player -->
     <section class="section card" id="create-section">
       <h2 class="section-title">Add a Player</h2>
       <form id="player-form" novalidate>
@@ -48,7 +48,7 @@
       </form>
     </section>
 
-    <!-- ── Players list ───────────────────────────────── -->
+    <!-- Players list -->
     <section class="section" id="players-section">
       <div class="section-header">
         <h2 class="section-title">Players</h2>
@@ -56,24 +56,30 @@
       </div>
 
       <div id="loading-players" class="loading hidden">
-        <span class="spinner"></span> Loading players…
+        <span class="spinner"></span> Loading players...
       </div>
 
       <div id="players" class="players-grid"></div>
 
       <div class="pagination" id="pagination">
-        <button id="prev-page" class="btn btn-secondary" disabled>← Prev</button>
+        <button id="prev-page" class="btn btn-secondary" disabled>&larr; Prev</button>
         <span id="page-info" class="page-info">Page 1</span>
-        <button id="next-page" class="btn btn-secondary">Next →</button>
+        <button id="next-page" class="btn btn-secondary">Next &rarr;</button>
       </div>
     </section>
 
-    <!-- ── Tier list ──────────────────────────────────── -->
+    <!-- Tier list -->
     <section class="section" id="ranking-section">
-      <h2 class="section-title">Tier List</h2>
+      <div class="section-header">
+        <h2 class="section-title">Tier List</h2>
+        <div class="ranking-actions">
+          <button id="export-pdf" class="btn btn-secondary">Export PDF</button>
+          <button id="reset-ranking" class="btn btn-reset">Reset Tier List</button>
+        </div>
+      </div>
 
       <div id="loading-ranking" class="loading hidden">
-        <span class="spinner"></span> Loading tier list…
+        <span class="spinner"></span> Loading tier list...
       </div>
 
       <div id="ranking" class="tierlist"></div>

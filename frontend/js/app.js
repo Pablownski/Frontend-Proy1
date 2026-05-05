@@ -149,6 +149,30 @@ async function handleAssignTier(playerId) {
   }
 }
 
+async function handleResetRanking() {
+  if (!confirm('Remove all players from the tier list? This cannot be undone.')) return;
+
+  const entries = Object.values(state.rankingEntries);
+  if (!entries.length) {
+    showToast('Tier list is already empty', 'info');
+    return;
+  }
+
+  try {
+    await Promise.all(entries.map(e => api.removeFromRanking(e.ranking_id)));
+    state.rankingEntries = {};
+    saveRankingEntriesToStorage();
+    showToast('Tier list reset!');
+    await Promise.all([loadRanking(), loadPlayers()]);
+  } catch (err) {
+    showToast(`Error resetting: ${err.message}`, 'error');
+  }
+}
+
+function handleExportPdf() {
+  window.print();
+}
+
 // ── Event delegation ───────────────────────────────────────────────────────────
 
 function onPlayersClick(e) {
@@ -194,6 +218,8 @@ async function init() {
   document.getElementById('players').addEventListener('click', onPlayersClick);
   document.getElementById('prev-page').addEventListener('click', onPrev);
   document.getElementById('next-page').addEventListener('click', onNext);
+  document.getElementById('reset-ranking').addEventListener('click', handleResetRanking);
+  document.getElementById('export-pdf').addEventListener('click', handleExportPdf);
 
   await Promise.all([loadPlayers(), loadRanking()]);
 }
