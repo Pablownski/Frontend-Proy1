@@ -152,14 +152,14 @@ async function handleAssignTier(playerId) {
 async function handleResetRanking() {
   if (!confirm('Remove all players from the tier list? This cannot be undone.')) return;
 
-  const entries = Object.values(state.rankingEntries);
-  if (!entries.length) {
+  const hasEntries = state.ranking.some(t => t.players.length > 0);
+  if (!hasEntries) {
     showToast('Tier list is already empty', 'info');
     return;
   }
 
   try {
-    await Promise.all(entries.map(e => api.removeFromRanking(e.ranking_id)));
+    await api.clearRanking();
     state.rankingEntries = {};
     saveRankingEntriesToStorage();
     showToast('Tier list reset!');

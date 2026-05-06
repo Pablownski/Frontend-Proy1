@@ -59,3 +59,7 @@ export function updateRanking(ranking_id, data) {
 export function removeFromRanking(ranking_id) {
   return request(`/ranking/${ranking_id}`, { method: 'DELETE' });
 }
+
+export function clearRanking() {
+  return request('/ranking', { method: 'DELETE' });
+}

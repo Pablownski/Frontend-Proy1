@@ -28,5 +28,12 @@ export function syncRankingEntriesWithApi(rankingData) {
       delete state.rankingEntries[pid];
     }
   }
+  for (const { tier, players } of rankingData) {
+    for (const p of players) {
+      if (!state.rankingEntries[p.id]) {
+        state.rankingEntries[p.id] = { ranking_id: p.ranking_id, tier };
+      }
+    }
+  }
   saveRankingEntriesToStorage();
 }
