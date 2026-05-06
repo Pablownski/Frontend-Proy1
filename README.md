@@ -51,7 +51,6 @@ El estado local se guarda en `localStorage` bajo la clave `goat_ranking_entries`
 frontend/
 ├── index.html        # estructura HTML de la app
 ├── styles.css        # estilos + media query de impresión
-├── Dockerfile        # imagen nginx para servir los estáticos
 └── js/
     ├── app.js        # inicialización, handlers y event listeners
     ├── api.js        # todas las llamadas al backend (fetch)
@@ -84,27 +83,26 @@ Endpoints que consume:
 
 ---
 
-## 🐳 Ejecución con Docker
+## 🐳 Despliegue
 
-El proyecto completo (frontend + backend + base de datos) se levanta desde la raíz del repo padre:
+El frontend es estático — no corre en Docker. Los archivos se sirven directamente desde el sistema de archivos del servidor mediante el nginx del servidor.
+
+El backend sí corre en Docker. Desde la raíz del repo padre:
 
 ```bash
 docker compose up --build
 ```
 
-Servicios:
+Servicios Docker:
 
 | Servicio | Puerto | Descripción |
 |----------|--------|-------------|
-| `proy1-frontend` | `5173` | Nginx sirviendo los archivos estáticos |
 | `proy1-api` | `8001` | API REST (FastAPI) |
 | `proy1-db` | `5433` | PostgreSQL 15 |
 
 Las imágenes subidas por los usuarios se guardan en el volumen `proy1_uploads` (montado en `/app/uploads` del contenedor API).
 
-Acceso local tras levantar:
-- Frontend: http://localhost:5173
-- API: http://localhost:8001
+**Desarrollo local:** abrí `frontend/index.html` directamente en el browser o servilo con cualquier servidor estático (ej: `python -m http.server`). La API debe estar corriendo en `localhost:8001` y el `BASE_URL` en `api.js` debe apuntar a ella.
 
 ---
 
