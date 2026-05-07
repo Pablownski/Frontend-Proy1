@@ -23,7 +23,7 @@ No utiliza frameworks ni librerías externas — solo HTML, CSS y JavaScript van
 - **Asignar tier**: seleccioná el tier (S / A / B / C / D / F) desde la card del jugador
 - **Visualizar ranking**: sección con los tiers S→F y los jugadores rankeados en cada uno
 - **Exportar PDF**: abre el diálogo de impresión del browser mostrando solo la tier list con el tema oscuro
-- **Reset Tier List**: elimina todos los jugadores de la tier list (con confirmación)
+- **Reset Tier List**: elimina toda la tier list de una sola llamada al backend, sin importar desde qué sesión o dispositivo se hayan agregado los jugadores (con confirmación)
 
 ---
 
@@ -41,7 +41,7 @@ No utiliza frameworks ni librerías externas — solo HTML, CSS y JavaScript van
 
 El frontend no accede directamente a la base de datos. Toda la lógica de datos vive en el backend.
 
-El estado local se guarda en `localStorage` bajo la clave `goat_ranking_entries` para mantener los tier assignments entre sesiones.
+El estado local se guarda en `localStorage` bajo la clave `goat_ranking_entries` y se sincroniza automáticamente con el backend al cargar la página, lo que permite que los tier assignments sean consistentes entre distintas sesiones y dispositivos.
 
 ---
 
@@ -80,14 +80,15 @@ Endpoints que consume:
 | POST | `/ranking` | Asignar jugador a un tier |
 | PUT | `/ranking/:id` | Cambiar tier de un jugador |
 | DELETE | `/ranking/:id` | Quitar jugador de la tier list |
+| DELETE | `/ranking` | Resetear toda la tier list de una vez |
 
 ---
 
 ## 🐳 Despliegue
 
-El frontend es estático — no corre en Docker. Los archivos se sirven directamente desde el sistema de archivos del servidor mediante el nginx del servidor.
+El frontend corre en un contenedor Docker con `nginx:alpine` que sirve los archivos estáticos directamente desde el filesystem.
 
-El backend sí corre en Docker. Desde la raíz del repo padre:
+El backend también corre en Docker. Desde la raíz del repo padre:
 
 ```bash
 docker compose up --build
@@ -97,8 +98,9 @@ Servicios Docker:
 
 | Servicio | Puerto | Descripción |
 |----------|--------|-------------|
+| `proy1-front` | `80` | Nginx sirviendo el frontend estático |
 | `proy1-api` | `8001` | API REST (FastAPI) |
-| `proy1-db` | `5433` | PostgreSQL 15 |
+| `proy1-db` | `5432` | PostgreSQL 15 |
 
 Las imágenes subidas por los usuarios se guardan en el volumen `proy1_uploads` (montado en `/app/uploads` del contenedor API).
 
@@ -116,7 +118,8 @@ Las imágenes subidas por los usuarios se guardan en el volumen `proy1_uploads` 
 
 - Fetch API nativa para consumir el backend
 - ES Modules (`import`/`export`) sin bundler
-- Estado en memoria + `localStorage` para persistir tier assignments entre sesiones
+- Estado en memoria + `localStorage` sincronizado con el backend al cargar
 - Renderizado dinámico del DOM (sin frameworks)
 - Delegación de eventos para la grilla de jugadores
+- Reset bulk de la tier list vía `DELETE /ranking` (funciona cross-session)
 - Arquitectura en capas: `api.js` → `state.js` → `ui.js` → `app.js`
