@@ -1,5 +1,5 @@
 import { state, loadRankingEntriesFromStorage, saveRankingEntriesToStorage, syncRankingEntriesWithApi } from './state.js';
-import * as api from './api.js';
+import * as api from './api.js?v=4';
 import {
   renderPlayers,
   renderRanking,
